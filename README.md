@@ -1,0 +1,1 @@
+# shiftmanager-Lite-V1
