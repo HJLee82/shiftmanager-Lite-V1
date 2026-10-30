@@ -48,7 +48,7 @@ function useSaveStore() {
 
 function StoreCard() {
   const { db, store } = useStore();
-  const { reload } = useSession();
+  const { reload, signOut } = useSession();
   const { confirm, notify } = useDialog();
   const save = useSaveStore();
   const [name, setName] = useState(store.name);
@@ -76,6 +76,10 @@ function StoreCard() {
             <Button title="Regenerate" color="red" onPress={regenerate} />
           </Row>
         </View>
+        {/* Phones have no top bar, so Log out also lives here. */}
+        <Row>
+          <Button title="Log out" color="grey" onPress={signOut} />
+        </Row>
       </View>
     </Card>
   );
@@ -207,10 +211,10 @@ function ShiftRow({ shift, onDone }: { shift?: ShiftType; onDone?: () => void })
   // Period on a typical day: the default break decides.
   const period = periodOf({ ...v, id: '' }, { ...store, openHours: {} }, today());
 
-  const remove = async () => {
-    const used = await countAssignmentsForShift(db, shift!.id);
+  const remove = async (s: ShiftType) => {
+    const used = await countAssignmentsForShift(db, s.id);
     const msg = used ? `It is used in ${used} scheduled shift(s), which will be removed too.` : undefined;
-    if (await confirm(`Delete "${shift!.name}"?`, msg, 'Delete', 'red')) await del.run(db, 'shift_types', shift!.id);
+    if (await confirm(`Delete "${s.name}"?`, msg, 'Delete', 'red')) await del.run(db, 'shift_types', s.id);
   };
 
   return (
@@ -225,7 +229,7 @@ function ShiftRow({ shift, onDone }: { shift?: ShiftType; onDone?: () => void })
         <Button title={shift ? 'Save' : 'Add'} small color={shift ? 'blue' : 'green'} disabled={!v.name.trim() || save.pending}
           onPress={async () => { await save.run(db, store.id, { ...v, name: v.name.trim(), id: shift?.id }); onDone?.(); }} />
       )}
-      {shift ? <Link title="🗑" onPress={remove} /> : <Link title="Cancel" onPress={() => onDone?.()} />}
+      {shift ? <Link title="🗑" label={`Delete ${shift.name}`} onPress={() => remove(shift)} /> : <Link title="Cancel" onPress={() => onDone?.()} />}
     </Row>
   );
 }

@@ -139,6 +139,9 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('photos', 'photos', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do nothing;
 
+-- Storage needs a select policy for the admin too: deletes and listings only see rows the user can select.
+create policy "photos: admin reads" on storage.objects for select to authenticated
+  using (bucket_id = 'photos' and public.is_store_admin(((storage.foldername(name))[1])::uuid));
 create policy "photos: admin writes" on storage.objects for insert to authenticated
   with check (bucket_id = 'photos' and public.is_store_admin(((storage.foldername(name))[1])::uuid));
 create policy "photos: admin updates" on storage.objects for update to authenticated

@@ -25,8 +25,8 @@ export function ShiftCard({
         <RoleBadge name={role} color={c.text} />
         {(onEdit || onDelete) && (
           <View style={s.actions}>
-            {onEdit && <Link title="✏️" onPress={onEdit} style={{ fontSize: 12 }} />}
-            {onDelete && <Link title="🗑" onPress={onDelete} style={{ fontSize: 12 }} />}
+            {onEdit && <Link title="✏️" label={`Edit ${name}`} onPress={onEdit} style={{ fontSize: 11 }} />}
+            {onDelete && <Link title="🗑" label={`Delete ${name}`} onPress={onDelete} style={{ fontSize: 11 }} />}
           </View>
         )}
       </View>
@@ -49,11 +49,11 @@ export function UnavailableBanner({ names }: { names: string[] }) {
 }
 
 const s = StyleSheet.create({
-  card: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, gap: 2 },
-  top: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  card: { borderRadius: 8, paddingHorizontal: 7, paddingVertical: 8, gap: 2 },
+  top: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   name: { fontWeight: '700', fontSize: 14, flexShrink: 1 },
   time: { fontSize: 12 },
-  actions: { flexDirection: 'row', gap: 6, marginLeft: 'auto' },
+  actions: { flexDirection: 'row', gap: 3, marginLeft: 'auto' },
   banner: { backgroundColor: colors.unavailableBg, borderRadius: 8, padding: 8, gap: 2 },
   bannerTitle: { color: colors.unavailableText, fontSize: 11 },
   bannerNames: { color: colors.unavailableText, fontWeight: '700', fontSize: 13 },

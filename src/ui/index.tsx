@@ -90,9 +90,9 @@ export function Button({
 }
 
 /** Text-only pressable, e.g. "← Back", "+ Add", ✏️, 🗑. */
-export function Link({ title, onPress, color = colors.muted, style }: { title: string; onPress: () => void; color?: string; style?: StyleProp<TextStyle> }) {
+export function Link({ title, onPress, color = colors.muted, style, label }: { title: string; onPress: () => void; color?: string; style?: StyleProp<TextStyle>; label?: string }) {
   return (
-    <Pressable accessibilityRole="button" onPress={onPress} hitSlop={6}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} hitSlop={6}>
       <Text style={[{ color, fontSize: 14 }, style]}>{title}</Text>
     </Pressable>
   );

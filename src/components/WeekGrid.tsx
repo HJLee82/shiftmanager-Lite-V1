@@ -36,8 +36,8 @@ export function SectionBlock({
       initial={initial}
       onCancel={() => setEditing(null)}
       onSave={(a) => {
-        if (initial) staged!.update({ ...a, id: initial.id });
-        else staged!.add(a);
+        if (initial) staged?.update({ ...a, id: initial.id });
+        else staged?.add(a);
         setEditing(null);
       }}
     />
@@ -83,12 +83,16 @@ export function WeekGrid({
   onDayPress?: (date: string) => void;
 }) {
   const now = today();
+  // Columns share the visible width (min 122px, then scroll); without a fixed width
+  // a horizontal ScrollView sizes each column to its longest unwrapped text.
+  const [width, setWidth] = useState(0);
+  const colWidth = Math.max(122, (width - 6 * GAP) / 7);
   return (
-    <ScrollView horizontal contentContainerStyle={s.grid}>
+    <ScrollView horizontal contentContainerStyle={s.grid} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       {dates.map((date) => {
         const closed = closedReason(data, date);
         return (
-          <View key={date} style={[s.column, date === highlight && s.highlight, closed && { backgroundColor: '#fafafa' }]}>
+          <View key={date} style={[s.column, { width: colWidth }, date === highlight && s.highlight, closed && { backgroundColor: '#fafafa' }]}>
             <Pressable onPress={onDayPress && (() => onDayPress(date))} disabled={!onDayPress} accessibilityRole={onDayPress ? 'link' : undefined}>
               <View style={[s.pill, date === now && s.todayPill]}>
                 <Text style={[s.pillText, date === now && { color: '#fff' }]}>{formatShortDay(date)}</Text>
@@ -110,9 +114,10 @@ export function WeekGrid({
   );
 }
 
+const GAP = 8;
 const s = StyleSheet.create({
-  grid: { gap: 8, flexGrow: 1, alignItems: 'flex-start' },
-  column: { flex: 1, minWidth: 122, borderWidth: 1, borderColor: colors.border, borderRadius: 10, padding: 7, gap: 8 },
+  grid: { gap: GAP, alignItems: 'flex-start' },
+  column: { borderWidth: 1, borderColor: colors.border, borderRadius: 10, padding: 7, gap: 8 },
   highlight: { borderColor: colors.blue, borderWidth: 2 },
   pill: { borderRadius: 6, paddingVertical: 4, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: colors.border },
   todayPill: { backgroundColor: colors.blue, borderBottomWidth: 0 },

@@ -79,7 +79,8 @@ function DayCell({ data, date, selected }: { data: ScheduleData; date: string; s
 function WeekEditor({ date }: { date: string }) {
   const { isAdmin } = useStore();
   const dates = weekDates(mondayOf(date));
-  const { data } = useScheduleData(dates[0], dates[6]);
+  // From the week before, so Copy Previous Week has its source.
+  const { data } = useScheduleData(addDays(dates[0], -7), dates[6]);
   const staged = useStagedSchedule(data);
   const copy = useCopyPreviousWeek(staged);
   useUnsavedChanges(staged.dirty);

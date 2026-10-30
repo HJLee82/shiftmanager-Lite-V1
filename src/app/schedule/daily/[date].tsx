@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { InlineShiftForm } from '@/components/InlineShiftForm';
 import { useCopyPreviousWeek } from '@/components/useCopyPreviousWeek';
 import { SectionBlock } from '@/components/WeekGrid';
-import { formatLongDate, isDate, mondayOf, today } from '@/lib/dates';
+import { addDays, formatLongDate, isDate, mondayOf, today } from '@/lib/dates';
 import { useScheduleData } from '@/lib/queries';
 import { closedReason, PERIODS } from '@/lib/schedule';
 import { useStore } from '@/lib/session';
@@ -17,7 +17,8 @@ export default function Daily() {
   const params = useLocalSearchParams<{ date: string }>();
   const date = isDate(params.date) ? params.date : today();
   const { isAdmin } = useStore();
-  const { data } = useScheduleData(date, date);
+  // From 7 days earlier, so Copy Previous Week has its source.
+  const { data } = useScheduleData(addDays(date, -7), date);
   const staged = useStagedSchedule(data);
   const copy = useCopyPreviousWeek(staged);
   const { confirm } = useDialog();
