@@ -48,16 +48,18 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
   return (
     <View style={[s.top, { paddingTop: insets.top }]}>
       <View style={s.topInner}>
-        <Pressable onPress={() => go('/dashboard')}>
-          <Text style={s.logo}>ShiftManager Lite</Text>
-        </Pressable>
+        <View style={s.brand}>
+          <Pressable onPress={() => go('/dashboard')}>
+            <Text style={s.logo}>ShiftManager Lite</Text>
+          </Pressable>
+          <Text style={s.store}>{session.store.name}</Text>
+        </View>
         <View style={s.links}>
           {links.map((l) => (
             <Pressable key={l.label} onPress={() => go(l.href)}>
               <Text style={[s.link, path.startsWith(l.match) && { color: colors.text, fontWeight: '600' }]}>{l.label}</Text>
             </Pressable>
           ))}
-          <Text style={s.store}>{session.store.name}</Text>
           {isAdmin && (
             <Pressable onPress={signOut}>
               <Text style={s.link}>Log out</Text>
@@ -72,6 +74,7 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
 const s = StyleSheet.create({
   top: { borderBottomWidth: 1, borderBottomColor: colors.border, backgroundColor: '#fff' },
   topInner: { width: '100%', maxWidth: MAX_WIDTH + 32, alignSelf: 'center', paddingHorizontal: 16, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  brand: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
   logo: { fontSize: 19, fontWeight: '700', color: colors.text },
   links: { flexDirection: 'row', alignItems: 'center', gap: 24 },
   link: { fontSize: 15, color: '#4b5563' },
