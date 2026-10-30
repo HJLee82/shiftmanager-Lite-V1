@@ -112,7 +112,9 @@ $$;
 -- ─── Row Level Security ────────────────────────────────────────────────────
 
 alter table public.stores enable row level security;
-create policy "stores: view" on public.stores for select using (public.can_view_store(id));
+-- Checks the row's own columns (not can_view_store), so INSERT … RETURNING can see the row it just created.
+create policy "stores: view" on public.stores for select
+  using (admin_user_id = auth.uid() or share_token = public.request_share_token());
 create policy "stores: admin creates own" on public.stores for insert with check (admin_user_id = auth.uid());
 create policy "stores: admin updates" on public.stores for update using (admin_user_id = auth.uid())
   with check (admin_user_id = auth.uid());
