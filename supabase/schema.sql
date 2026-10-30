@@ -8,7 +8,8 @@
 --
 -- Dates are 'YYYY-MM-DD' (date), times 'HH:MM' (text). Weekday keys: sun mon tue wed thu fri sat.
 
-create extension if not exists pgcrypto;
+-- Supabase installs pgcrypto in the `extensions` schema, so its functions are called as extensions.*.
+create extension if not exists pgcrypto with schema extensions;
 
 -- ─── Tables ────────────────────────────────────────────────────────────────
 
@@ -16,7 +17,7 @@ create table public.stores (
   id uuid primary key default gen_random_uuid(),
   admin_user_id uuid not null unique references auth.users (id) on delete cascade,
   name text not null,
-  share_token text not null unique default encode(gen_random_bytes(12), 'hex'),
+  share_token text not null unique default encode(extensions.gen_random_bytes(12), 'hex'),
   -- { "sun": { "isOpen": true, "open": "11:00", "close": "20:00", "breakStart"?: "15:00", "breakEnd"?: "16:00" }, ... }
   -- breakStart/breakEnd on a day override break_time for that day.
   open_hours jsonb not null default '{}',
@@ -103,7 +104,7 @@ $$;
 -- Admin only: issue a new share token, invalidating the old link.
 create or replace function public.regenerate_share_token() returns text
 language sql volatile security invoker set search_path = public as $$
-  update stores set share_token = encode(gen_random_bytes(12), 'hex')
+  update stores set share_token = encode(extensions.gen_random_bytes(12), 'hex')
   where admin_user_id = auth.uid()
   returning share_token
 $$;
