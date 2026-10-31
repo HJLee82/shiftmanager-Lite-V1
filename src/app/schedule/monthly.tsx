@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 import { DateCalendar } from '@/components/DateCalendar';
+import { ScheduleTabs } from '@/components/ScheduleTabs';
 import { useCopyPreviousWeek } from '@/components/useCopyPreviousWeek';
 import { WeekGrid } from '@/components/WeekGrid';
 import { addDays, formatMonth, formatMonthDay, isDate, isMonth, mondayOf, today, weekDates } from '@/lib/dates';
@@ -27,6 +28,7 @@ export default function Monthly() {
 
   return (
     <Screen>
+      <ScheduleTabs active="monthly" week={mondayOf(date ?? (today().startsWith(month) ? today() : `${month}-01`))} month={month} />
       <H1>{formatMonth(month)}</H1>
       {!data ? (
         <Loading />
