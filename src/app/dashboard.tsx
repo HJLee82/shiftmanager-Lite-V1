@@ -1,26 +1,35 @@
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 import { WeekGrid } from '@/components/WeekGrid';
-import { formatLongDate, formatMDY, mondayOf, today, weekDates } from '@/lib/dates';
+import { formatLongDate, formatMDY, mondayOf, monthName, today, weekDates } from '@/lib/dates';
 import { useScheduleData } from '@/lib/queries';
 import { closedReason, isAvailable, PERIODS, type ScheduleData } from '@/lib/schedule';
 import { photoUrl } from '@/lib/supabase';
-import { Avatar, Body, Card, H1, H2, Loading, Muted, Row, Screen } from '@/ui';
+import { Avatar, Body, Button, Card, H1, H2, Loading, Muted, Row, Screen } from '@/ui';
 import { colors, periodColors } from '@/ui/theme';
 
 export default function Dashboard() {
   const dates = weekDates(mondayOf(today()));
+  const month = today().slice(0, 7);
   const { data } = useScheduleData(dates[0], dates[6]);
 
   return (
     <Screen>
       <H1>Dashboard</H1>
       <View style={{ gap: 10 }}>
-        <Row>
-          <H2>This Week&apos;s Schedule</H2>
-          <Muted>
-            {formatMDY(dates[0])} to {formatMDY(dates[6])}
-          </Muted>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <Row>
+            <H2>This Week&apos;s Schedule</H2>
+            <Muted>
+              {formatMDY(dates[0])} to {formatMDY(dates[6])}
+            </Muted>
+          </Row>
+          <Button
+            title={`${monthName(month)} Schedule`}
+            color="orange"
+            small
+            onPress={() => router.push({ pathname: '/schedule/monthly', params: { month } })}
+          />
         </Row>
         {!data ? (
           <Loading />
