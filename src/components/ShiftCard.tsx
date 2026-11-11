@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import type { Tone } from '@/lib/schedule';
 import { Link, RoleBadge } from '@/ui';
-import { colors, toneColors, toneText } from '@/ui/theme';
+import { colors, toneColors } from '@/ui/theme';
 
-/** Employee first name + role initial circle, then "start - end". Blue for morning, purple for night; afternoon and Night-only starters in outlined letters. */
+/** Employee first name + role initial circle, then "start - end". Blue for morning, purple for night; afternoon and Night-only starters inverted. */
 export function ShiftCard({
   name, role, time, tone, onEdit, onDelete, large,
 }: {
@@ -19,7 +19,7 @@ export function ShiftCard({
   return (
     <View style={[s.card, { backgroundColor: c.bg }, large && { padding: 12 }]}>
       <View style={s.top}>
-        <Text style={[s.name, toneText(tone, 'text')]} numberOfLines={1}>
+        <Text style={[s.name, { color: c.text }]} numberOfLines={1}>
           {large ? name : name.split(' ')[0]}
         </Text>
         <RoleBadge name={role} color={c.text} />
@@ -30,7 +30,7 @@ export function ShiftCard({
           </View>
         )}
       </View>
-      <Text style={[s.time, toneText(tone, 'sub')]} numberOfLines={1}>
+      <Text style={[s.time, { color: c.sub }]} numberOfLines={1}>
         {time}
       </Text>
     </View>

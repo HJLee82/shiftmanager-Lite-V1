@@ -1,6 +1,3 @@
-import { Platform, type TextStyle } from 'react-native';
-import type { Tone } from '@/lib/schedule';
-
 // Colours from the reference screenshots (docs/structure.md §7).
 export const colors = {
   text: '#1f2937',
@@ -27,22 +24,13 @@ export const colors = {
   avatarBg: '#dbeafe',
 };
 
-// Hollow tones (afternoon shifts, Night-only starters) draw outlined letters; see toneText.
+// Afternoon shifts and Night-only starters swap their period's light and dark colours.
 export const toneColors = {
-  morning: { bg: colors.morningBg, text: colors.morningText, sub: colors.morningSub, hollow: false },
-  afternoon: { bg: colors.morningBg, text: colors.morningText, sub: colors.morningSub, hollow: true },
-  night: { bg: colors.nightBg, text: colors.nightText, sub: colors.nightSub, hollow: false },
-  nightStart: { bg: colors.nightBg, text: colors.nightText, sub: colors.nightSub, hollow: true },
+  morning: { bg: colors.morningBg, text: colors.morningText, sub: colors.morningSub },
+  afternoon: { bg: colors.morningText, text: colors.morningBg, sub: colors.morningBg },
+  night: { bg: colors.nightBg, text: colors.nightText, sub: colors.nightSub },
+  nightStart: { bg: colors.nightText, text: colors.nightBg, sub: colors.nightBg },
 };
-
-/** Text colour for a tone. Hollow tones: outlined letters on web; underlined on phones, which have no text stroke. */
-export function toneText(tone: Tone, which: 'text' | 'sub'): TextStyle {
-  const { [which]: color, hollow } = toneColors[tone];
-  if (!hollow) return { color };
-  if (Platform.OS !== 'web') return { color, textDecorationLine: 'underline' };
-  // WebkitTextStroke isn't in TextStyle; react-native-web passes it through to CSS.
-  return { color: 'transparent', WebkitTextStroke: `1px ${color}` } as TextStyle;
-}
 
 export const MAX_WIDTH = 960;
 /** Below this width the app uses the phone layout (bottom tabs, stacked forms). */
