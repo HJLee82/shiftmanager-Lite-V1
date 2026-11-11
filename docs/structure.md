@@ -267,7 +267,7 @@ Phones: bottom tab bar instead of the top nav; cards and forms stack to one colu
 
 ## 8. Build Order (suggested)
 
-1. Data model + seed data (1 store, 3 roles, 4 shift types, 6 employees: Alice, Bob, Carol, David, Emma, Frank)
+1. Data model
 2. Auth (admin login, viewer share link, RLS) + layout/nav
 3. Settings (store + viewer link, open hours, break, shift hours, roles, store unavailability)
 4. Employees list / detail / add / edit

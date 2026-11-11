@@ -16,6 +16,8 @@ export const colors = {
   morningBg: '#eaf2ff',
   morningText: '#1d4ed8',
   morningSub: '#3b82f6',
+  afternoonText: '#c2410c',
+  afternoonSub: '#ea580c',
   nightBg: '#f8f0ff',
   nightText: '#7e22ce',
   nightSub: '#a855f7',
@@ -24,8 +26,9 @@ export const colors = {
   avatarBg: '#dbeafe',
 };
 
-export const periodColors = {
+export const toneColors = {
   morning: { bg: colors.morningBg, text: colors.morningText, sub: colors.morningSub },
+  afternoon: { bg: colors.morningBg, text: colors.afternoonText, sub: colors.afternoonSub },
   night: { bg: colors.nightBg, text: colors.nightText, sub: colors.nightSub },
 };
 

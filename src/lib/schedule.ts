@@ -56,6 +56,13 @@ export function periodOf(shift: ShiftType, store: Store, date: string): Period {
   return brk && shift.startTime >= brk.end ? 'night' : 'morning';
 }
 
+/** Card colour: Morning shifts that run to closing (e.g. 3pm - closing) get their own 'afternoon' tone. */
+export type Tone = Period | 'afternoon';
+export function toneOf(shift: ShiftType, store: Store, date: string): Tone {
+  const period = periodOf(shift, store, date);
+  return period === 'morning' && shift.endType === 'closing' ? 'afternoon' : period;
+}
+
 export const shiftsForPeriod = (data: ScheduleData, date: string, period: Period) =>
   data.shiftTypes.filter((s) => periodOf(s, data.store, date) === period).sort(byStart);
 
