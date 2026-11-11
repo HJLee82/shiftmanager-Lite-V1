@@ -74,7 +74,9 @@ npm start        # dev server; scan the QR code with Expo Go, or press i / a for
 
 Log in as an admin. To see the viewer side, copy the link from **Settings → Store** and open it in a private window.
 
-> Phones are not tested yet. On iOS, dropdowns currently appear as wheel pickers.
+On phone browsers (under 700px wide) screens switch to a phone layout: bottom tabs, one day per row in schedules, stacked forms. **Add to Home Screen** installs it as "Shifts" (`public/manifest.json`).
+
+> The native iOS / Android apps are not tested yet. On iOS, dropdowns currently appear as wheel pickers.
 
 ## Test
 
@@ -108,6 +110,7 @@ src/
     session.tsx   Admin login / viewer link / signed out
     staged.ts     Holds schedule edits until Done
   ui/             Shared UI (Button, Card, Select, TimeSelect, dialogs) and theme colors
+public/          Web page template, home-screen manifest and icons
 supabase/
   schema.sql      Tables, Row Level Security, photo storage
 docs/

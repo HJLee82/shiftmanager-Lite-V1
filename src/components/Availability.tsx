@@ -1,14 +1,41 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { DAY_KEYS, DAY_LABELS, type DayKey } from '@/lib/dates';
 import { periodOf, shiftTimeLabel, type Employee, type ScheduleData } from '@/lib/schedule';
-import { Checkbox, Row, Select, Toggle } from '@/ui';
+import { Checkbox, Row, Select, Toggle, useIsPhone } from '@/ui';
 import { colors, toneColors } from '@/ui/theme';
 
 // Availability is per weekday, so periods use a reference date with that weekday (2026-06-07 is a Sunday).
 const refDate = (d: DayKey) => `2026-06-${String(7 + DAY_KEYS.indexOf(d)).padStart(2, '0')}`;
 
-/** Read-only grid: Morning/Night rows × Sun–Sat columns. */
+/** Read-only grid: Morning/Night rows × Sun–Sat columns. On phones, one line per open day. */
 export function AvailabilityTable({ data, employee }: { data: ScheduleData; employee: Employee }) {
+  const phone = useIsPhone();
+  if (phone) {
+    return (
+      <View style={s.table}>
+        {DAY_KEYS.filter((d) => data.store.openHours[d]?.isOpen).map((d, i) => {
+          const day = employee.availability[d];
+          const shift = data.shiftTypes.find((x) => x.id === day?.shiftTypeId);
+          let content = <Text style={s.dash}>-</Text>;
+          if (day?.available && day.allDay) content = <Text style={[s.chip, { backgroundColor: toneColors.morning.bg, color: toneColors.morning.text }]}>All Day</Text>;
+          else if (day?.available && shift) {
+            const c = toneColors[periodOf(shift, data.store, refDate(d))];
+            content = (
+              <Text style={[s.chip, { backgroundColor: c.bg, color: c.text }]}>
+                {shift.name} <Text style={{ color: c.sub }}>{shiftTimeLabel(shift, data.store, refDate(d))}</Text>
+              </Text>
+            );
+          }
+          return (
+            <View key={d} style={[s.row, s.listRow, i > 0 && { borderTopWidth: 1, borderTopColor: colors.border }]}>
+              <Text style={[s.headText, { width: 44, textAlign: 'left', paddingVertical: 0 }]}>{DAY_LABELS[d]}</Text>
+              {content}
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
   return (
     <View style={s.table}>
       <View style={s.row}>
@@ -53,6 +80,7 @@ export function AvailabilityEditor({
   value: Employee['availability'];
   onChange: (v: Employee['availability']) => void;
 }) {
+  const phone = useIsPhone();
   const shifts = [...data.shiftTypes].sort((a, b) => a.startTime.localeCompare(b.startTime));
   const set = (d: DayKey, patch: Partial<NonNullable<Employee['availability'][DayKey]>>) => {
     const cur = value[d] ?? { available: false, allDay: false, shiftTypeId: shifts[0]?.id };
@@ -64,19 +92,23 @@ export function AvailabilityEditor({
         const closed = !data.store.openHours[d]?.isOpen;
         const day = value[d];
         const on = !!day?.available && !closed;
+        const select = (
+          <Select
+            style={{ width: phone ? '100%' : 230 }}
+            disabled={!on || day?.allDay}
+            value={day?.shiftTypeId ?? shifts[0]?.id ?? ''}
+            onChange={(id) => set(d, { shiftTypeId: id })}
+            options={shifts.map((x) => ({ label: `${x.name} (${shiftTimeLabel(x, data.store, refDate(d))})`, value: x.id }))}
+          />
+        );
+        const toggle = <Toggle label="All Day" value={on && !!day?.allDay} disabled={!on} onChange={(v) => set(d, { allDay: v })} />;
+        // Phones: day and All Day on one line, the shift dropdown full width below (none on closed days).
         return (
           <Row key={d} gap={14} style={{ opacity: closed ? 0.45 : 1 }}>
             <View style={{ width: 64 }}>
               <Checkbox label={DAY_LABELS[d]} checked={on} disabled={closed} onChange={(v) => set(d, { available: v })} />
             </View>
-            <Select
-              style={{ width: 230 }}
-              disabled={!on || day?.allDay}
-              value={day?.shiftTypeId ?? shifts[0]?.id ?? ''}
-              onChange={(id) => set(d, { shiftTypeId: id })}
-              options={shifts.map((x) => ({ label: `${x.name} (${shiftTimeLabel(x, data.store, refDate(d))})`, value: x.id }))}
-            />
-            <Toggle label="All Day" value={on && !!day?.allDay} disabled={!on} onChange={(v) => set(d, { allDay: v })} />
+            {phone ? <>{toggle}{!closed && select}</> : <>{select}{toggle}</>}
           </Row>
         );
       })}
@@ -91,5 +123,6 @@ const s = StyleSheet.create({
   headText: { fontSize: 12, color: colors.muted, textAlign: 'center', paddingVertical: 8 },
   cell: { flex: 1, minHeight: 56, padding: 4, alignItems: 'center', borderLeftWidth: 1, borderLeftColor: colors.border },
   dash: { color: colors.faint, fontSize: 11, paddingTop: 8 },
+  listRow: { alignItems: 'center', gap: 8, paddingHorizontal: 10, paddingVertical: 8 },
   chip: { fontSize: 11, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 6, textAlign: 'center', overflow: 'hidden' },
 });
