@@ -8,7 +8,7 @@ import { useWrite } from '@/lib/queries';
 import type { Employee, ScheduleData } from '@/lib/schedule';
 import { useStore } from '@/lib/session';
 import { photoUrl } from '@/lib/supabase';
-import { Avatar, Body, Button, Card, H1, Link, Muted, Row, Screen, TextField } from '@/ui';
+import { Avatar, Body, Button, Card, H1, Link, Muted, Row, Screen, TextField, useIsPhone } from '@/ui';
 import { colors } from '@/ui/theme';
 import { AvailabilityEditor } from './Availability';
 import { DateCalendar } from './DateCalendar';
@@ -17,6 +17,7 @@ import { DateCalendar } from './DateCalendar';
 export function EmployeeForm({ data, employee }: { data: ScheduleData; employee?: Employee }) {
   const { db, store } = useStore();
   const save = useWrite(saveEmployee);
+  const phone = useIsPhone();
   const [name, setName] = useState(employee?.name ?? '');
   const [availability, setAvailability] = useState(employee?.availability ?? {});
   const [unavailable, setUnavailable] = useState(
@@ -82,7 +83,7 @@ export function EmployeeForm({ data, employee }: { data: ScheduleData; employee?
           {unavailable.length === 0 && <Muted>Tap dates on the calendar.</Muted>}
           {unavailable.map((u, i) => (
             <Row key={u.date}>
-              <Body style={{ width: 230 }}>{formatLongDate(u.date)}</Body>
+              <Body style={{ width: phone ? '100%' : 230 }}>{formatLongDate(u.date)}</Body>
               <TextField
                 style={{ flex: 1, minWidth: 160 }}
                 value={u.reason}

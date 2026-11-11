@@ -47,11 +47,11 @@ export default function Weekly() {
           ))}
       </Row>
       <Row gap={16}>
-        <Link title="←" onPress={() => go(addDays(monday, -7))} style={{ fontSize: 20 }} />
+        <Link title="←" onPress={() => go(addDays(monday, -7))} style={{ fontSize: 20, paddingHorizontal: 6 }} />
         <Body>
           {formatMDY(dates[0])} to {formatMDY(dates[6])}
         </Body>
-        <Link title="→" onPress={() => go(addDays(monday, 7))} style={{ fontSize: 20 }} />
+        <Link title="→" onPress={() => go(addDays(monday, 7))} style={{ fontSize: 20, paddingHorizontal: 6 }} />
         <Button title="Today" color="outline" small onPress={() => go(today())} />
       </Row>
       <Muted>{staged.dirty ? 'Copied from last week. Save to keep the changes.' : 'Tap a day to see its details.'}</Muted>

@@ -6,7 +6,7 @@ import {
   type Assignment, type Period, type ScheduleData,
 } from '@/lib/schedule';
 import type { StagedSchedule } from '@/lib/staged';
-import { Link } from '@/ui';
+import { Link, useIsPhone } from '@/ui';
 import { colors } from '@/ui/theme';
 import { InlineShiftForm } from './InlineShiftForm';
 import { ShiftCard, UnavailableBanner } from './ShiftCard';
@@ -72,7 +72,7 @@ export function SectionBlock({
   );
 }
 
-/** 7 day columns (Mon → Sun), each split Morning / Night. Scrolls sideways on narrow screens. */
+/** 7 day columns (Mon → Sun), each split Morning / Night. On phones, one day per row instead. */
 export function WeekGrid({
   data, dates, staged, highlight, onDayPress,
 }: {
@@ -83,21 +83,57 @@ export function WeekGrid({
   onDayPress?: (date: string) => void;
 }) {
   const now = today();
+  const phone = useIsPhone();
   // Columns share the visible width (min 122px, then scroll); without a fixed width
   // a horizontal ScrollView sizes each column to its longest unwrapped text.
   const [width, setWidth] = useState(0);
   const colWidth = Math.max(122, (width - 6 * GAP) / 7);
+
+  const pill = (date: string) => (
+    <Pressable onPress={onDayPress && (() => onDayPress(date))} disabled={!onDayPress} accessibilityRole={onDayPress ? 'link' : undefined}>
+      <View style={[s.pill, date === now && s.todayPill]}>
+        <Text style={[s.pillText, date === now && { color: '#fff' }]}>{formatShortDay(date)}</Text>
+      </View>
+    </Pressable>
+  );
+
+  // Phones: one day per row, Morning and Night side by side; closed days shrink to one line.
+  if (phone) {
+    return (
+      <View style={{ gap: GAP }}>
+        {dates.map((date) => {
+          const closed = closedReason(data, date);
+          if (closed) {
+            return (
+              <Text key={date} style={s.closedRow}>
+                {formatShortDay(date)} · {closed}
+              </Text>
+            );
+          }
+          return (
+            <View key={date} style={[s.column, date === highlight && s.highlight]}>
+              {pill(date)}
+              <View style={{ flexDirection: 'row', gap: GAP }}>
+                {PERIODS.map((period) => (
+                  <View key={period} style={{ flex: 1 }}>
+                    <SectionBlock data={data} date={date} period={period} staged={staged} />
+                  </View>
+                ))}
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
+
   return (
     <ScrollView horizontal contentContainerStyle={s.grid} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       {dates.map((date) => {
         const closed = closedReason(data, date);
         return (
           <View key={date} style={[s.column, { width: colWidth }, date === highlight && s.highlight, closed && { backgroundColor: '#fafafa' }]}>
-            <Pressable onPress={onDayPress && (() => onDayPress(date))} disabled={!onDayPress} accessibilityRole={onDayPress ? 'link' : undefined}>
-              <View style={[s.pill, date === now && s.todayPill]}>
-                <Text style={[s.pillText, date === now && { color: '#fff' }]}>{formatShortDay(date)}</Text>
-              </View>
-            </Pressable>
+            {pill(date)}
             {closed ? (
               <Text style={s.closed}>{closed}</Text>
             ) : (
@@ -127,4 +163,5 @@ const s = StyleSheet.create({
   empty: { textAlign: 'center', color: colors.faint, paddingVertical: 10 },
   divider: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 8 },
   closed: { color: colors.faint, textAlign: 'center', paddingVertical: 16, fontSize: 13 },
+  closedRow: { color: colors.faint, fontSize: 13, paddingVertical: 10, paddingHorizontal: 8, borderRadius: 10, backgroundColor: '#fafafa' },
 });

@@ -11,11 +11,11 @@ Built with **Expo (React Native) + Supabase**. Web first; iOS and Android builds
 
 | Area | What it does |
 |---|---|
-| **Dashboard** | This week's schedule, who is available each day (Morning / Night), shortcuts |
+| **Dashboard** | This week's schedule, who is available today (admin only), shortcuts |
 | **Weekly schedule** | Mon–Sun grid split into Morning and Night; tap a day for details |
 | **Daily schedule** | Add, edit and delete shifts in place; unavailable employees shown first in bold red; Copy Previous Week; edits are saved together with **Done** |
 | **Monthly schedule** | Month calendar with shift chips; tap a date to edit that week below |
-| **Employees** | List, detail, add and edit: photo, weekly availability (a shift or All Day), unavailable dates |
+| **Employees** (admin only) | List, detail, add and edit: photo, weekly availability (a shift or All Day), unavailable dates |
 | **Settings** (admin only) | Store name and viewer link, open hours, break time, shift hours, store closed dates, roles |
 
 ### Who can do what
@@ -23,7 +23,8 @@ Built with **Expo (React Native) + Supabase**. Web first; iOS and Android builds
 | | Admin (manager) | Viewer (staff) |
 |---|---|---|
 | Access | Email + password (invite only) | Private share link, no login |
-| View schedules and employees | ✅ | ✅ |
+| View schedules | ✅ | ✅ (reload for the latest) |
+| Employees pages | ✅ | ❌ |
 | Add / edit / delete anything | ✅ | ❌ |
 | Settings | ✅ | ❌ |
 
@@ -74,7 +75,9 @@ npm start        # dev server; scan the QR code with Expo Go, or press i / a for
 
 Log in as an admin. To see the viewer side, copy the link from **Settings → Store** and open it in a private window.
 
-> Phones are not tested yet. On iOS, dropdowns currently appear as wheel pickers.
+On phone browsers (under 700px wide) screens switch to a phone layout: bottom tabs, one day per row in schedules, stacked forms. **Add to Home Screen** installs it as "Shifts" (`public/manifest.json`).
+
+> The native iOS / Android apps are not tested yet. On iOS, dropdowns currently appear as wheel pickers.
 
 ## Test
 
@@ -82,6 +85,15 @@ Log in as an admin. To see the viewer side, copy the link from **Settings → St
 npm test           # unit tests for the scheduling rules (Vitest)
 npm run typecheck  # TypeScript
 npm run lint       # ESLint (Expo config)
+```
+
+## Deploy
+
+The web app is hosted on EAS Hosting at **https://shiftmanager-lite.expo.app** (Expo account `hjlee82`). The Supabase values in `.env.local` are built into the bundle.
+
+```bash
+npx expo export -p web               # build to dist/
+npx eas-cli@latest deploy --prod     # upload and make it the live version
 ```
 
 ## Project structure
@@ -99,6 +111,7 @@ src/
     session.tsx   Admin login / viewer link / signed out
     staged.ts     Holds schedule edits until Done
   ui/             Shared UI (Button, Card, Select, TimeSelect, dialogs) and theme colors
+public/          Web page template, home-screen manifest and icons
 supabase/
   schema.sql      Tables, Row Level Security, photo storage
 docs/

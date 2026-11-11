@@ -41,9 +41,9 @@ export default function Daily() {
   return (
     <Screen>
       <Row style={{ justifyContent: 'space-between' }}>
-        <Row gap={14}>
+        <Row gap={14} style={{ flexShrink: 1, flexWrap: 'nowrap' }}>
           <Link title="← Back" onPress={back} />
-          <H1 style={{ fontSize: 22 }}>{formatLongDate(date)}</H1>
+          <H1 style={{ fontSize: 22, flexShrink: 1 }}>{formatLongDate(date)}</H1>
         </Row>
         {isAdmin && !closed && (
           <Row>

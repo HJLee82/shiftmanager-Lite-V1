@@ -1,14 +1,15 @@
 import { router, usePathname, type Href } from 'expo-router';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSession } from '@/lib/session';
 import { hasUnsavedChanges } from '@/lib/unsaved';
+import { useIsPhone } from '@/ui';
 import { useDialog } from '@/ui/dialog';
-import { colors, MAX_WIDTH, PHONE_WIDTH } from '@/ui/theme';
+import { colors, MAX_WIDTH } from '@/ui/theme';
 
 const LINKS: { href: Href; label: string; match: string; adminOnly?: boolean }[] = [
   { href: '/dashboard', label: 'Dashboard', match: '/dashboard' },
-  { href: '/employees', label: 'Employees', match: '/employees' },
+  { href: '/employees', label: 'Employees', match: '/employees', adminOnly: true },
   { href: '/schedule/weekly', label: 'Schedule', match: '/schedule' },
   { href: '/settings', label: 'Settings', match: '/settings', adminOnly: true },
 ];
@@ -19,7 +20,7 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
   const { confirm } = useDialog();
   const path = usePathname();
   const insets = useSafeAreaInsets();
-  const phone = useWindowDimensions().width < PHONE_WIDTH;
+  const phone = useIsPhone();
   if (session.status !== 'admin' && session.status !== 'viewer') return null;
   if ((position === 'bottom') !== phone) return null;
 

@@ -11,7 +11,7 @@ import { DAY_KEYS, DAY_LABELS, formatLongDate, today, type DayKey } from '@/lib/
 import { useStoreData, useWrite } from '@/lib/queries';
 import { periodOf, type OpenDay, type ScheduleData, type ShiftType, type Store } from '@/lib/schedule';
 import { useSession, useStore } from '@/lib/session';
-import { Body, Button, Card, Checkbox, H1, Label, Link, Loading, Muted, Row, Screen, Select, TextField, TimeSelect } from '@/ui';
+import { Body, Button, Card, Checkbox, H1, Label, Link, Loading, Muted, Row, Screen, Select, TextField, TimeSelect, useIsPhone } from '@/ui';
 import { useDialog } from '@/ui/dialog';
 import { colors } from '@/ui/theme';
 
@@ -87,6 +87,7 @@ function StoreCard() {
 
 function OpenHoursCard() {
   const { store } = useStore();
+  const phone = useIsPhone();
   const save = useSaveStore();
   const [hours, setHours] = useState(store.openHours);
   const day = (d: DayKey): OpenDay => hours[d] ?? { isOpen: false, open: '11:00', close: '21:00' };
@@ -99,7 +100,7 @@ function OpenHoursCard() {
       <View style={{ gap: 10 }}>
         {DAY_KEYS.map((d) => (
           <Row key={d} gap={12}>
-            <View style={{ width: 70 }}>
+            <View style={{ width: phone && day(d).isOpen ? '100%' : 70 }}>
               <Checkbox label={DAY_LABELS[d]} checked={day(d).isOpen} onChange={(isOpen) => set(d, { isOpen })} />
             </View>
             {day(d).isOpen ? (
@@ -132,6 +133,7 @@ function OpenHoursCard() {
 
 function BreakCard() {
   const { store } = useStore();
+  const phone = useIsPhone();
   const save = useSaveStore();
   const [brk, setBrk] = useState({ start: store.breakTime.start ?? '15:00', end: store.breakTime.end ?? '16:00' });
   const [hours, setHours] = useState(store.openHours);
@@ -152,7 +154,7 @@ function BreakCard() {
           const custom = !!hours[d]?.breakStart;
           return (
             <Row key={d} gap={12}>
-              <View style={{ width: 70 }}>
+              <View style={{ width: phone && custom ? '100%' : 70 }}>
                 <Checkbox
                   label={DAY_LABELS[d]}
                   checked={custom}
@@ -203,6 +205,7 @@ const END_OPTIONS = [
 
 function ShiftRow({ shift, onDone }: { shift?: ShiftType; onDone?: () => void }) {
   const { db, store } = useStore();
+  const phone = useIsPhone();
   const { confirm } = useDialog();
   const save = useWrite(saveShiftType);
   const del = useWrite(deleteRow);
@@ -219,7 +222,7 @@ function ShiftRow({ shift, onDone }: { shift?: ShiftType; onDone?: () => void })
 
   return (
     <Row gap={8} style={{ paddingVertical: 6, borderTopWidth: 1, borderTopColor: colors.border }}>
-      <TextField value={v.name} onChangeText={(name) => setV({ ...v, name })} placeholder="Shift name" style={{ width: 140 }} />
+      <TextField value={v.name} onChangeText={(name) => setV({ ...v, name })} placeholder="Shift name" style={{ width: phone ? '100%' : 140 }} />
       <TimeSelect value={v.startTime} onChange={(startTime) => setV({ ...v, startTime })} />
       <Muted>to</Muted>
       <Select style={{ width: 120 }} value={v.endType} onChange={(endType) => setV({ ...v, endType: endType as ShiftType['endType'], endTime: endType === 'custom' ? (v.endTime ?? '17:00') : null })} options={END_OPTIONS} />

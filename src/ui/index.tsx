@@ -2,12 +2,15 @@
 import { Picker } from '@react-native-picker/picker';
 import { Image } from 'expo-image';
 import {
-  ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View,
+  ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, useWindowDimensions, View,
   type StyleProp, type TextStyle, type ViewStyle,
 } from 'react-native';
-import { colors, MAX_WIDTH } from './theme';
+import { colors, MAX_WIDTH, PHONE_WIDTH } from './theme';
 
 // ─── Layout ──────────────────────────────────────────────────────────────
+
+/** True below PHONE_WIDTH, where screens switch to their phone layout. */
+export const useIsPhone = () => useWindowDimensions().width < PHONE_WIDTH;
 
 /** Scrollable page with a centred, max-width column. */
 export function Screen({ children }: { children: React.ReactNode }) {
@@ -23,8 +26,9 @@ export function Row({ children, style, gap = 8 }: { children: React.ReactNode; s
 }
 
 export function Card({ title, children, style }: { title?: string; children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+  const phone = useIsPhone();
   return (
-    <View style={[s.card, style]}>
+    <View style={[s.card, phone && { padding: 14 }, style]}>
       {title && <H2 style={{ marginBottom: 14 }}>{title}</H2>}
       {children}
     </View>
@@ -71,6 +75,7 @@ export function Button({
   style?: StyleProp<ViewStyle>;
 }) {
   const [bg, fg] = BUTTON_COLORS[color];
+  const phone = useIsPhone();
   return (
     <Pressable
       accessibilityRole="button"
@@ -79,6 +84,7 @@ export function Button({
       style={({ pressed }) => [
         s.button,
         small && s.buttonSmall,
+        small && phone && { paddingVertical: 8 }, // bigger tap target on phones
         { backgroundColor: bg, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         color === 'outline' && { borderWidth: 1, borderColor: colors.blue },
         style,
@@ -92,7 +98,7 @@ export function Button({
 /** Text-only pressable, e.g. "← Back", "+ Add", ✏️, 🗑. */
 export function Link({ title, onPress, color = colors.muted, style, label }: { title: string; onPress: () => void; color?: string; style?: StyleProp<TextStyle>; label?: string }) {
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} hitSlop={6}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} hitSlop={10}>
       <Text style={[{ color, fontSize: 14 }, style]}>{title}</Text>
     </Pressable>
   );

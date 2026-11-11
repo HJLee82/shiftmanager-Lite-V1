@@ -4,6 +4,7 @@ import { WeekGrid } from '@/components/WeekGrid';
 import { formatLongDate, formatMDY, mondayOf, monthName, today, weekDates } from '@/lib/dates';
 import { useScheduleData } from '@/lib/queries';
 import { closedReason, isAvailable, PERIODS, type ScheduleData } from '@/lib/schedule';
+import { useStore } from '@/lib/session';
 import { photoUrl } from '@/lib/supabase';
 import { Avatar, Body, Button, Card, H1, H2, Loading, Muted, Row, Screen } from '@/ui';
 import { colors, toneColors } from '@/ui/theme';
@@ -11,6 +12,7 @@ import { colors, toneColors } from '@/ui/theme';
 export default function Dashboard() {
   const dates = weekDates(mondayOf(today()));
   const month = today().slice(0, 7);
+  const { isAdmin } = useStore();
   const { data } = useScheduleData(dates[0], dates[6]);
 
   return (
@@ -42,7 +44,7 @@ export default function Dashboard() {
         )}
       </View>
 
-      {data && <AvailableToday data={data} date={today()} />}
+      {isAdmin && data && <AvailableToday data={data} date={today()} />}
     </Screen>
   );
 }

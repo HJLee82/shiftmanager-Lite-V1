@@ -10,7 +10,7 @@ import { assignmentsFor, closedReason, PERIODS, type ScheduleData } from '@/lib/
 import { useStore } from '@/lib/session';
 import { useStagedSchedule } from '@/lib/staged';
 import { hasUnsavedChanges, useUnsavedChanges } from '@/lib/unsaved';
-import { Button, H1, H2, Loading, Row, Screen } from '@/ui';
+import { Button, H1, H2, Loading, Row, Screen, useIsPhone } from '@/ui';
 import { useDialog } from '@/ui/dialog';
 import { colors, toneColors } from '@/ui/theme';
 
@@ -46,13 +46,14 @@ export default function Monthly() {
   );
 }
 
-/** Date number, up to 2 shift chips (name only), "+N more"; closed dates greyed with the reason. */
+/** Date number, up to 2 shift chips (name only), "+N more" (phones: head counts); closed dates greyed with the reason. */
 function DayCell({ data, date, selected }: { data: ScheduleData; date: string; selected: boolean }) {
   const closed = closedReason(data, date);
   const chips = PERIODS.flatMap((p) =>
     assignmentsFor(data, date, p).map((a) => ({ tone: a.tone, name: a.employee.name.split(' ')[0] })),
   );
   const isToday = date === today();
+  const phone = useIsPhone();
   return (
     <View
       style={{
@@ -65,6 +66,12 @@ function DayCell({ data, date, selected }: { data: ScheduleData; date: string; s
       </View>
       {closed ? (
         <Text style={{ fontSize: 10, color: colors.faint }} numberOfLines={1}>{closed}</Text>
+      ) : phone ? (
+        // Phones: too narrow for names, so Morning / Night head counts.
+        PERIODS.map((p) => {
+          const n = assignmentsFor(data, date, p).length;
+          return n > 0 && <Text key={p} style={{ fontSize: 11, fontWeight: '700', color: toneColors[p].text }}>● {n}</Text>;
+        })
       ) : (
         <>
           {chips.slice(0, 2).map((c, i) => (
