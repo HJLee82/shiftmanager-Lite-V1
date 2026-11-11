@@ -35,8 +35,8 @@ One admin account owns one store. Permissions are enforced in the database (Supa
 - **Available** = the store is open, the employee's weekly availability covers that period, and they have no unavailable date. Everyone else can still be assigned from the **Others** list.
 - **Copy Previous Week** copies from 7 days earlier. If the target already has shifts, it asks to **Replace** or **Merge**, and it reports what it skipped (store closed, employee unavailable).
 - The role is chosen for each assigned shift and shown as a letter in a circle.
-- Shift cards are blue for Morning and purple for Night. Morning shifts that run to closing (for example 3pm - closing) are orange.
-- In Night, people who didn't work that Morning are listed first, in teal.
+- Shift cards are blue for Morning and purple for Night. Morning shifts that run to closing (for example 3pm - closing) use outlined blue letters (underlined on phones).
+- In Night, people who didn't work that Morning are listed first, in outlined purple letters (underlined on phones).
 
 ## Setup
 

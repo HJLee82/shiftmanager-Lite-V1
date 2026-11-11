@@ -12,7 +12,7 @@ import { useStagedSchedule } from '@/lib/staged';
 import { hasUnsavedChanges, useUnsavedChanges } from '@/lib/unsaved';
 import { Button, H1, H2, Loading, Row, Screen } from '@/ui';
 import { useDialog } from '@/ui/dialog';
-import { colors, toneColors } from '@/ui/theme';
+import { colors, toneColors, toneText } from '@/ui/theme';
 
 export default function Monthly() {
   const params = useLocalSearchParams<{ month?: string; date?: string }>();
@@ -68,7 +68,7 @@ function DayCell({ data, date, selected }: { data: ScheduleData; date: string; s
       ) : (
         <>
           {chips.slice(0, 2).map((c, i) => (
-            <Text key={i} numberOfLines={1} style={{ fontSize: 11, backgroundColor: toneColors[c.tone].bg, color: toneColors[c.tone].text, borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1 }}>
+            <Text key={i} numberOfLines={1} style={{ fontSize: 11, backgroundColor: toneColors[c.tone].bg, ...toneText(c.tone, 'text'), borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1 }}>
               {c.name}
             </Text>
           ))}
