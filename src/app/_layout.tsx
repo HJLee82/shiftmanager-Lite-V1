@@ -46,9 +46,9 @@ function Shell() {
             <Stack.Screen name="schedule/weekly" />
             <Stack.Screen name="schedule/monthly" />
             <Stack.Screen name="schedule/daily/[date]" />
-            <Stack.Screen name="employees/index" />
-            <Stack.Screen name="employees/[id]/index" />
             <Stack.Protected guard={session.status === 'admin'} redirectTo="/dashboard">
+              <Stack.Screen name="employees/index" />
+              <Stack.Screen name="employees/[id]/index" />
               <Stack.Screen name="employees/new" />
               <Stack.Screen name="employees/[id]/edit" />
               <Stack.Screen name="settings" />

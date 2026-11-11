@@ -9,7 +9,7 @@ import { colors, MAX_WIDTH } from '@/ui/theme';
 
 const LINKS: { href: Href; label: string; match: string; adminOnly?: boolean }[] = [
   { href: '/dashboard', label: 'Dashboard', match: '/dashboard' },
-  { href: '/employees', label: 'Employees', match: '/employees' },
+  { href: '/employees', label: 'Employees', match: '/employees', adminOnly: true },
   { href: '/schedule/weekly', label: 'Schedule', match: '/schedule' },
   { href: '/settings', label: 'Settings', match: '/settings', adminOnly: true },
 ];

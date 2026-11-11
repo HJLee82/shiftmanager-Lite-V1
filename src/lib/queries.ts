@@ -2,12 +2,16 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getScheduleData } from './api';
 import { useStore } from './session';
 
-/** Schedule data for the current store with assignments in `from`…`to`. */
+/**
+ * Schedule data for the current store with assignments in `from`…`to`.
+ * Viewers re-fetch every 30s so an admin's saved changes show up without a reload.
+ */
 export function useScheduleData(from: string, to: string) {
-  const { db, store } = useStore();
+  const { db, store, isAdmin } = useStore();
   return useQuery({
     queryKey: ['schedule', store.id, store, from, to],
     queryFn: () => getScheduleData(db, store, from, to),
+    refetchInterval: isAdmin ? false : 30_000,
   });
 }
 

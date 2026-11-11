@@ -15,7 +15,7 @@ Built with **Expo (React Native) + Supabase**. Web first; iOS and Android builds
 | **Weekly schedule** | Mon–Sun grid split into Morning and Night; tap a day for details |
 | **Daily schedule** | Add, edit and delete shifts in place; unavailable employees shown first in bold red; Copy Previous Week; edits are saved together with **Done** |
 | **Monthly schedule** | Month calendar with shift chips; tap a date to edit that week below |
-| **Employees** | List, detail, add and edit: photo, weekly availability (a shift or All Day), unavailable dates |
+| **Employees** (admin only) | List, detail, add and edit: photo, weekly availability (a shift or All Day), unavailable dates |
 | **Settings** (admin only) | Store name and viewer link, open hours, break time, shift hours, store closed dates, roles |
 
 ### Who can do what
@@ -23,7 +23,8 @@ Built with **Expo (React Native) + Supabase**. Web first; iOS and Android builds
 | | Admin (manager) | Viewer (staff) |
 |---|---|---|
 | Access | Email + password (invite only) | Private share link, no login |
-| View schedules and employees | ✅ | ✅ |
+| View schedules | ✅ | ✅ (refreshes every 30 seconds) |
+| Employees pages | ✅ | ❌ |
 | Add / edit / delete anything | ✅ | ❌ |
 | Settings | ✅ | ❌ |
 

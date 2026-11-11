@@ -13,7 +13,7 @@ import { useDialog } from '@/ui/dialog';
 
 export default function EmployeeDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { db, isAdmin } = useStore();
+  const { db } = useStore();
   const { data } = useStoreData();
   const { confirm } = useDialog();
   const del = useWrite(deleteEmployee);
@@ -34,12 +34,10 @@ export default function EmployeeDetail() {
     <Screen>
       <Row style={{ justifyContent: 'space-between' }}>
         <Link title="← Back" onPress={() => router.navigate('/employees')} />
-        {isAdmin && (
-          <Row>
-            <Button title="Edit" onPress={() => router.push(`/employees/${emp.id}/edit`)} />
-            <Button title="Delete" color="red" onPress={remove} disabled={del.pending} />
-          </Row>
-        )}
+        <Row>
+          <Button title="Edit" onPress={() => router.push(`/employees/${emp.id}/edit`)} />
+          <Button title="Delete" color="red" onPress={remove} disabled={del.pending} />
+        </Row>
       </Row>
       <Card title="Employee Info">
         <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
