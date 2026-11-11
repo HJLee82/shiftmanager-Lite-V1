@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { formatShortDay, today } from '@/lib/dates';
 import {
-  assignmentsFor, closedReason, PERIODS, sectionCandidates, shiftTimeLabel, toneOf,
+  assignmentsFor, closedReason, PERIODS, sectionCandidates, shiftTimeLabel,
   type Assignment, type Period, type ScheduleData,
 } from '@/lib/schedule';
 import type { StagedSchedule } from '@/lib/staged';
@@ -61,7 +61,7 @@ export function SectionBlock({
             name={a.employee.name}
             role={data.roles.find((r) => r.id === a.roleId)?.name}
             time={shiftTimeLabel(a.shift, data.store, date)}
-            tone={toneOf(a.shift, data.store, date)}
+            tone={a.tone}
             onEdit={staged && (() => setEditing(a.id))}
             onDelete={staged && (() => staged.remove(a.id))}
           />

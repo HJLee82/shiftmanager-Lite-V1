@@ -21,6 +21,8 @@ export const colors = {
   nightBg: '#f8f0ff',
   nightText: '#7e22ce',
   nightSub: '#a855f7',
+  nightStartText: '#0f766e',
+  nightStartSub: '#14b8a6',
   unavailableBg: '#fef2f2',
   unavailableText: '#dc2626',
   avatarBg: '#dbeafe',
@@ -30,6 +32,7 @@ export const toneColors = {
   morning: { bg: colors.morningBg, text: colors.morningText, sub: colors.morningSub },
   afternoon: { bg: colors.morningBg, text: colors.afternoonText, sub: colors.afternoonSub },
   night: { bg: colors.nightBg, text: colors.nightText, sub: colors.nightSub },
+  nightStart: { bg: colors.nightBg, text: colors.nightStartText, sub: colors.nightStartSub },
 };
 
 export const MAX_WIDTH = 960;

@@ -6,7 +6,7 @@ import { useCopyPreviousWeek } from '@/components/useCopyPreviousWeek';
 import { WeekGrid } from '@/components/WeekGrid';
 import { addDays, formatMonth, formatMonthDay, isDate, isMonth, mondayOf, today, weekDates } from '@/lib/dates';
 import { useScheduleData } from '@/lib/queries';
-import { assignmentsFor, closedReason, PERIODS, toneOf, type ScheduleData } from '@/lib/schedule';
+import { assignmentsFor, closedReason, PERIODS, type ScheduleData } from '@/lib/schedule';
 import { useStore } from '@/lib/session';
 import { useStagedSchedule } from '@/lib/staged';
 import { hasUnsavedChanges, useUnsavedChanges } from '@/lib/unsaved';
@@ -50,7 +50,7 @@ export default function Monthly() {
 function DayCell({ data, date, selected }: { data: ScheduleData; date: string; selected: boolean }) {
   const closed = closedReason(data, date);
   const chips = PERIODS.flatMap((p) =>
-    assignmentsFor(data, date, p).map((a) => ({ tone: toneOf(a.shift, data.store, date), name: a.employee.name.split(' ')[0] })),
+    assignmentsFor(data, date, p).map((a) => ({ tone: a.tone, name: a.employee.name.split(' ')[0] })),
   );
   const isToday = date === today();
   return (
