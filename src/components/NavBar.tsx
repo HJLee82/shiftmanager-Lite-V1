@@ -14,7 +14,7 @@ const LINKS: { href: Href; label: string; match: string; adminOnly?: boolean }[]
   { href: '/settings', label: 'Settings', match: '/settings', adminOnly: true },
 ];
 
-/** Top bar on wide screens; on phones `position="bottom"` renders the tab bar. */
+/** Top bar on all screens (brand only on phones); on phones `position="bottom"` also renders the tab bar. */
 export function NavBar({ position }: { position: 'top' | 'bottom' }) {
   const { session, signOut } = useSession();
   const { confirm } = useDialog();
@@ -22,7 +22,7 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
   const insets = useSafeAreaInsets();
   const phone = useIsPhone();
   if (session.status !== 'admin' && session.status !== 'viewer') return null;
-  if ((position === 'bottom') !== phone) return null;
+  if (position === 'bottom' && !phone) return null;
 
   const isAdmin = session.status === 'admin';
   const links = LINKS.filter((l) => isAdmin || !l.adminOnly);
@@ -30,6 +30,23 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
     if (hasUnsavedChanges() && !(await confirm('Leave without saving?', 'Your schedule changes will be lost.', 'Leave', 'red'))) return;
     router.navigate(href);
   };
+
+  const brand = (
+    <View style={s.brand}>
+      <Pressable onPress={() => go('/dashboard')}>
+        <Text style={s.logo}>ShiftManager Lite</Text>
+      </Pressable>
+      <Text style={s.store} numberOfLines={1}>{session.store.name}</Text>
+    </View>
+  );
+
+  if (phone && position === 'top') {
+    return (
+      <View style={[s.top, { paddingTop: insets.top }]}>
+        <View style={[s.topInner, { paddingVertical: 12 }]}>{brand}</View>
+      </View>
+    );
+  }
 
   if (phone) {
     return (
@@ -49,12 +66,7 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
   return (
     <View style={[s.top, { paddingTop: insets.top }]}>
       <View style={s.topInner}>
-        <View style={s.brand}>
-          <Pressable onPress={() => go('/dashboard')}>
-            <Text style={s.logo}>ShiftManager Lite</Text>
-          </Pressable>
-          <Text style={s.store}>{session.store.name}</Text>
-        </View>
+        {brand}
         <View style={s.links}>
           {links.map((l) => (
             <Pressable key={l.label} onPress={() => go(l.href)}>
@@ -75,11 +87,11 @@ export function NavBar({ position }: { position: 'top' | 'bottom' }) {
 const s = StyleSheet.create({
   top: { borderBottomWidth: 1, borderBottomColor: colors.border, backgroundColor: '#fff' },
   topInner: { width: '100%', maxWidth: MAX_WIDTH + 32, alignSelf: 'center', paddingHorizontal: 16, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  brand: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
+  brand: { flexDirection: 'row', alignItems: 'baseline', gap: 10, flexShrink: 1 },
   logo: { fontSize: 19, fontWeight: '700', color: colors.text },
   links: { flexDirection: 'row', alignItems: 'center', gap: 24 },
   link: { fontSize: 15, color: '#4b5563' },
-  store: { fontSize: 13, color: colors.faint },
+  store: { fontSize: 13, color: colors.faint, flexShrink: 1 },
   tabs: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: '#fff', paddingTop: 8 },
   tab: { flex: 1, alignItems: 'center', paddingVertical: 6 },
   tabText: { fontSize: 13, color: colors.muted },
