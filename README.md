@@ -11,7 +11,7 @@ Built with **Expo (React Native) + Supabase**. Web first; iOS and Android builds
 
 | Area | What it does |
 |---|---|
-| **Dashboard** | This week's schedule, who is available each day (Morning / Night), shortcuts |
+| **Dashboard** | This week's schedule, who is available today (admin only), shortcuts |
 | **Weekly schedule** | Mon–Sun grid split into Morning and Night; tap a day for details |
 | **Daily schedule** | Add, edit and delete shifts in place; unavailable employees shown first in bold red; Copy Previous Week; edits are saved together with **Done** |
 | **Monthly schedule** | Month calendar with shift chips; tap a date to edit that week below |
@@ -23,7 +23,7 @@ Built with **Expo (React Native) + Supabase**. Web first; iOS and Android builds
 | | Admin (manager) | Viewer (staff) |
 |---|---|---|
 | Access | Email + password (invite only) | Private share link, no login |
-| View schedules | ✅ | ✅ (refreshes every 30 seconds) |
+| View schedules | ✅ | ✅ (reload for the latest) |
 | Employees pages | ✅ | ❌ |
 | Add / edit / delete anything | ✅ | ❌ |
 | Settings | ✅ | ❌ |
