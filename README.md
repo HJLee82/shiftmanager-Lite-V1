@@ -84,6 +84,15 @@ npm run typecheck  # TypeScript
 npm run lint       # ESLint (Expo config)
 ```
 
+## Deploy
+
+The web app is hosted on EAS Hosting at **https://shiftmanager-lite.expo.app** (Expo account `hjlee82`). The Supabase values in `.env.local` are built into the bundle.
+
+```bash
+npx expo export -p web               # build to dist/
+npx eas-cli@latest deploy --prod     # upload and make it the live version
+```
+
 ## Project structure
 
 ```

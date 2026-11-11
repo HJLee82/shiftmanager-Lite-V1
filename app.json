@@ -2,6 +2,7 @@
   "expo": {
     "name": "ShiftManager Lite",
     "slug": "shiftmanager-lite",
+    "owner": "hjlee82",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -38,6 +39,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b47c9bf4-18ec-44cc-b206-c90a76e3bb93"
+      }
     }
   }
 }
