@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { dayKey, formatEnd, formatShortDay, formatStart, mondayOf, monthGrid } from './dates';
 import {
-  closedReason, isAvailable, periodOf, planCopy, sectionCandidates, shiftTimeLabel,
+  assignmentsFor, closedReason, isAvailable, periodOf, planCopy, sectionCandidates, shiftTimeLabel, toneOf,
   type ScheduleData, type ShiftType,
 } from './schedule';
 
@@ -50,6 +50,19 @@ describe('periods and labels', () => {
     const d = base();
     expect(periodOf(d.shiftTypes[0], d.store, WED)).toBe('morning'); // 10:30
     expect(periodOf(d.shiftTypes[1], d.store, WED)).toBe('night'); // 16:00
+  });
+  it('tones Morning shifts that run to closing as afternoon', () => {
+    const d = base();
+    expect(toneOf(shift('an', '15:00', 'closing'), d.store, WED)).toBe('afternoon');
+    expect(toneOf(shift('am', '11:00', 'breakTime'), d.store, WED)).toBe('morning');
+    expect(toneOf(d.shiftTypes[1], d.store, WED)).toBe('night'); // 16:00
+  });
+  it('puts Night-only staff first, toned nightStart', () => {
+    const d = base();
+    const a = (id: string, employeeId: string, shiftTypeId: string) => ({ id, employeeId, shiftTypeId, roleId: null, date: WED });
+    d.assignments = [a('1', 'alice', 'open'), a('2', 'alice', 'night'), a('3', 'bob', 'night')];
+    expect(assignmentsFor(d, WED, 'night').map((x) => [x.employeeId, x.tone])).toEqual([['bob', 'nightStart'], ['alice', 'night']]);
+    expect(assignmentsFor(d, WED, 'morning').map((x) => x.tone)).toEqual(['morning']);
   });
   it('uses a per-day break override', () => {
     const d = base();

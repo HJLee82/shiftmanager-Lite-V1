@@ -61,7 +61,7 @@ export function SectionBlock({
             name={a.employee.name}
             role={data.roles.find((r) => r.id === a.roleId)?.name}
             time={shiftTimeLabel(a.shift, data.store, date)}
-            period={period}
+            tone={a.tone}
             onEdit={staged && (() => setEditing(a.id))}
             onDelete={staged && (() => staged.remove(a.id))}
           />

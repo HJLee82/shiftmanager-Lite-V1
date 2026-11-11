@@ -1,21 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native';
-import type { Period } from '@/lib/schedule';
+import type { Tone } from '@/lib/schedule';
 import { Link, RoleBadge } from '@/ui';
-import { colors, periodColors } from '@/ui/theme';
+import { colors, toneColors } from '@/ui/theme';
 
-/** Employee first name + role initial circle, then "start - end". Blue for morning, purple for night. */
+/** Employee first name + role initial circle, then "start - end". Blue for morning, purple for night; afternoon and Night-only starters inverted. */
 export function ShiftCard({
-  name, role, time, period, onEdit, onDelete, large,
+  name, role, time, tone, onEdit, onDelete, large,
 }: {
   name: string;
   role?: string;
   time: string;
-  period: Period;
+  tone: Tone;
   onEdit?: () => void;
   onDelete?: () => void;
   large?: boolean;
 }) {
-  const c = periodColors[period];
+  const c = toneColors[tone];
   return (
     <View style={[s.card, { backgroundColor: c.bg }, large && { padding: 12 }]}>
       <View style={s.top}>

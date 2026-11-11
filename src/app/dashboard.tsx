@@ -6,7 +6,7 @@ import { useScheduleData } from '@/lib/queries';
 import { closedReason, isAvailable, PERIODS, type ScheduleData } from '@/lib/schedule';
 import { photoUrl } from '@/lib/supabase';
 import { Avatar, Body, Button, Card, H1, H2, Loading, Muted, Row, Screen } from '@/ui';
-import { colors, periodColors } from '@/ui/theme';
+import { colors, toneColors } from '@/ui/theme';
 
 export default function Dashboard() {
   const dates = weekDates(mondayOf(today()));
@@ -77,7 +77,7 @@ function AvailableToday({ data, date }: { data: ScheduleData; date: string }) {
               <Avatar name={e.name} url={photoUrl(e.photoPath)} size={36} />
               <Body style={{ flex: 1 }}>{e.name}</Body>
               {periods.map((p) => (
-                <Text key={p} style={{ fontSize: 12, backgroundColor: periodColors[p].bg, color: periodColors[p].text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 }}>
+                <Text key={p} style={{ fontSize: 12, backgroundColor: toneColors[p].bg, color: toneColors[p].text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 }}>
                   {p === 'morning' ? 'Morning' : 'Night'}
                 </Text>
               ))}

@@ -56,6 +56,16 @@ export function periodOf(shift: ShiftType, store: Store, date: string): Period {
   return brk && shift.startTime >= brk.end ? 'night' : 'morning';
 }
 
+/**
+ * Card colour: Morning shifts that run to closing (e.g. 3pm - closing) get their own 'afternoon' tone.
+ * 'nightStart' marks a Night shift by someone with no Morning shift that day (see assignmentsFor).
+ */
+export type Tone = Period | 'afternoon' | 'nightStart';
+export function toneOf(shift: ShiftType, store: Store, date: string): Tone {
+  const period = periodOf(shift, store, date);
+  return period === 'morning' && shift.endType === 'closing' ? 'afternoon' : period;
+}
+
 export const shiftsForPeriod = (data: ScheduleData, date: string, period: Period) =>
   data.shiftTypes.filter((s) => periodOf(s, data.store, date) === period).sort(byStart);
 
@@ -89,14 +99,25 @@ export function isAvailable(data: ScheduleData, emp: Employee, date: string, per
   return !!shift && periodOf(shift, data.store, date) === period;
 }
 
+/**
+ * The date's assignments in one period, by start time then name, each with its card tone.
+ * In Night, people who didn't work that Morning come first, toned 'nightStart'.
+ */
 export function assignmentsFor(data: ScheduleData, date: string, period: Period) {
-  return data.assignments
+  const all = data.assignments
     .filter((a) => a.date === date)
-    .map((a) => ({ a, shift: data.shiftTypes.find((s) => s.id === a.shiftTypeId)! }))
-    .filter(({ shift }) => shift && periodOf(shift, data.store, date) === period)
-    .map(({ a, shift }) => ({ ...a, shift, employee: data.employees.find((e) => e.id === a.employeeId)! }))
-    .filter((x) => x.employee)
-    .sort((x, y) => x.shift.startTime.localeCompare(y.shift.startTime) || x.employee.name.localeCompare(y.employee.name));
+    .map((a) => ({ ...a, shift: data.shiftTypes.find((s) => s.id === a.shiftTypeId)!, employee: data.employees.find((e) => e.id === a.employeeId)! }))
+    .filter((x) => x.shift && x.employee);
+  const workedMorning = new Set(all.filter((x) => periodOf(x.shift, data.store, date) === 'morning').map((x) => x.employeeId));
+  return all
+    .filter((x) => periodOf(x.shift, data.store, date) === period)
+    .map((x) => ({
+      ...x,
+      tone: period === 'night' && !workedMorning.has(x.employeeId) ? ('nightStart' as const) : toneOf(x.shift, data.store, date),
+    }))
+    .sort((x, y) =>
+      Number(y.tone === 'nightStart') - Number(x.tone === 'nightStart') ||
+      x.shift.startTime.localeCompare(y.shift.startTime) || x.employee.name.localeCompare(y.employee.name));
 }
 
 /**

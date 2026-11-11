@@ -24,9 +24,12 @@ export const colors = {
   avatarBg: '#dbeafe',
 };
 
-export const periodColors = {
+// Afternoon shifts and Night-only starters swap their period's light and dark colours.
+export const toneColors = {
   morning: { bg: colors.morningBg, text: colors.morningText, sub: colors.morningSub },
+  afternoon: { bg: colors.morningText, text: colors.morningBg, sub: colors.morningBg },
   night: { bg: colors.nightBg, text: colors.nightText, sub: colors.nightSub },
+  nightStart: { bg: colors.nightText, text: colors.nightBg, sub: colors.nightBg },
 };
 
 export const MAX_WIDTH = 960;

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { DAY_KEYS, DAY_LABELS, type DayKey } from '@/lib/dates';
 import { periodOf, shiftTimeLabel, type Employee, type ScheduleData } from '@/lib/schedule';
 import { Checkbox, Row, Select, Toggle } from '@/ui';
-import { colors, periodColors } from '@/ui/theme';
+import { colors, toneColors } from '@/ui/theme';
 
 // Availability is per weekday, so periods use a reference date with that weekday (2026-06-07 is a Sunday).
 const refDate = (d: DayKey) => `2026-06-${String(7 + DAY_KEYS.indexOf(d)).padStart(2, '0')}`;
@@ -21,7 +21,7 @@ export function AvailabilityTable({ data, employee }: { data: ScheduleData; empl
         <View key={period} style={[s.row, { borderTopWidth: 1, borderTopColor: colors.border }]}>
           <Text style={[s.head, s.headText]}>{period === 'morning' ? 'Morning' : 'Night'}</Text>
           {DAY_KEYS.map((d) => {
-            const c = periodColors[period];
+            const c = toneColors[period];
             const date = refDate(d);
             const day = employee.availability[d];
             const shift = data.shiftTypes.find((x) => x.id === day?.shiftTypeId);

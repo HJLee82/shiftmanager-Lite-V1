@@ -12,7 +12,7 @@ import { useStagedSchedule } from '@/lib/staged';
 import { hasUnsavedChanges, useUnsavedChanges } from '@/lib/unsaved';
 import { Button, H1, H2, Loading, Row, Screen } from '@/ui';
 import { useDialog } from '@/ui/dialog';
-import { colors, periodColors } from '@/ui/theme';
+import { colors, toneColors } from '@/ui/theme';
 
 export default function Monthly() {
   const params = useLocalSearchParams<{ month?: string; date?: string }>();
@@ -49,7 +49,9 @@ export default function Monthly() {
 /** Date number, up to 2 shift chips (name only), "+N more"; closed dates greyed with the reason. */
 function DayCell({ data, date, selected }: { data: ScheduleData; date: string; selected: boolean }) {
   const closed = closedReason(data, date);
-  const chips = PERIODS.flatMap((p) => assignmentsFor(data, date, p).map((a) => ({ p, name: a.employee.name.split(' ')[0] })));
+  const chips = PERIODS.flatMap((p) =>
+    assignmentsFor(data, date, p).map((a) => ({ tone: a.tone, name: a.employee.name.split(' ')[0] })),
+  );
   const isToday = date === today();
   return (
     <View
@@ -66,7 +68,7 @@ function DayCell({ data, date, selected }: { data: ScheduleData; date: string; s
       ) : (
         <>
           {chips.slice(0, 2).map((c, i) => (
-            <Text key={i} numberOfLines={1} style={{ fontSize: 11, backgroundColor: periodColors[c.p].bg, color: periodColors[c.p].text, borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1 }}>
+            <Text key={i} numberOfLines={1} style={{ fontSize: 11, backgroundColor: toneColors[c.tone].bg, color: toneColors[c.tone].text, borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1 }}>
               {c.name}
             </Text>
           ))}
